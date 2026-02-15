@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "mysite"
+version = "0.1.0"
+description = "Django project for practical work"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+asgiref = "3.6.0"
+Django = "4.2"
+django-debug-toolbar = "4.0.0"
+django-filter = "22.1"
+djangorestframework = "3.14.0"
+Pillow = "9.4.0"
+pytz = "2022.7.1"
+sqlparse = "0.4.2"
+gunicorn = "21.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,44 @@
+services:
+  web:
+    build: .
+    container_name: mysite_web
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_DEBUG=1
+      - DJANGO_SECRET_KEY=django-insecure-hvxn%qq=gyw^4*o2lo1#bw0=wh#ux9s8h!=@c608arf_gz3+^7
+      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      - USE_POSTGRES=true
+      - DB_NAME=mysite
+      - DB_USER=mysite_user
+      - DB_PASSWORD=mysite_password
+      - DB_HOST=db
+      - DB_PORT=5432
+    volumes:
+      - ./mysite/uploads:/app/mysite/uploads
+      - static_volume:/app/mysite/staticfiles
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "sleep 5 && python manage.py migrate && gunicorn --bind 0.0.0.0:8000 mysite.wsgi:application"
+
+  db:
+    image: postgres:14-alpine
+    container_name: mysite_db
+    restart: always
+    environment:
+      - POSTGRES_DB=mysite
+      - POSTGRES_USER=mysite_user
+      - POSTGRES_PASSWORD=mysite_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mysite_user -d mysite"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  static_volume:
